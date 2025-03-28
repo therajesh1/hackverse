@@ -1,0 +1,182 @@
+{% extends "base.html" %}
+{% block title %}
+Login
+{% endblock title %}
+{% block body %}
+<!-- Login Form Container -->
+<div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="row w-100 justify-content-center">
+        <div class="col-md-6 col-lg-4 col-12">
+            <div class="form-container">
+                <!-- Logo -->
+               
+                
+                <h3>Welcome Back!</h3>
+                <p class="subtitle">Login to continue</p>
+
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    <!-- Username Field -->
+                    <div class="input-group">
+                        <span class="input-icon"><i class='bx bx-user'></i>username</span>
+                        <input type="text" name="username" id="username" placeholder="Username" required>
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="input-group">
+                        <span class="input-icon"><i class='bx bx-lock'></i>password</span>
+                        <input type="password" name="pass1" id="password" placeholder="Password" required>
+                    </div>
+
+                    <!-- Remember Me & Forgot Password -->
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <label class="form-check-label">
+                            <input type="checkbox"> Remember Me
+                        </label>
+                        <a href="#" class="forgot-password">Forgot Password?</a>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="login-btn"><i class='bx bx-log-in'></i> Log In</button>
+
+                    <!-- Register Link -->
+                    <p class="register-text">Don't have an account? <a href="#">Sign Up</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    /* Import Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+
+
+/* Form Container */
+.form-container {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+    transition: transform 0.3s;
+}
+
+.form-container:hover {
+    transform: scale(1.02);
+}
+
+/* Logo */
+.logo {
+    width: 70px;
+    margin-bottom: 1rem;
+}
+
+/* Titles */
+h3 {
+    color: #343a40;
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+}
+
+.subtitle {
+    color: #6c757d;
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Input Group */
+.input-group {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 10px;
+    margin: 10px 0;
+    background: #f8f9fa;
+}
+
+.input-icon {
+    color: #007bff;
+    font-size: 1.2rem;
+    padding-right: 10px;
+}
+
+.input-group input {
+    width: 100%;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    background: transparent;
+}
+
+/* Remember Me & Forgot Password */
+.form-check-label {
+    font-size: 14px;
+    color: #555;
+}
+
+.forgot-password {
+    font-size: 14px;
+    text-decoration: none;
+    color: #007bff;
+    transition: color 0.3s;
+}
+
+.forgot-password:hover {
+    color: #0056b3;
+}
+
+/* Login Button */
+.login-btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    background: #007bff;
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.login-btn i {
+    padding-right: 5px;
+}
+
+.login-btn:hover {
+    background: #0056b3;
+    transform: scale(1.05);
+}
+
+/* Register Link */
+.register-text {
+    font-size: 14px;
+    margin-top: 15px;
+    color: #333;
+}
+
+.register-text a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.register-text a:hover {
+    text-decoration: underline;
+}
+
+/* Mobile Responsive */
+@media (max-width: 576px) {
+    .form-container {
+        width: 90%;
+        padding: 2rem;
+    }
+}
+</style>  
+{% endblock body %}

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accreditation Alignment Checker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+        }
+        .form-container {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        select, textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        textarea {
+            min-height: 120px;
+        }
+        button {
+            background: #4285f4;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #3367d6;
+        }
+        #results {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 4px;
+            background: #e8f4fc;
+            display: none;
+        }
+        #spinner {
+            display: none;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Accreditation Alignment Checker</h1>
+    
+    <div class="form-container">
+        <form id="alignmentForm">
+            <div class="form-group">
+                <label>Outcome Type</label>
+                <div>
+                    <input type="radio" id="coRadio" name="outcome_type" value="CO" checked>
+                    <label for="coRadio" style="display: inline;">Course Outcome (CO)</label>
+                </div>
+                <div>
+                    <input type="radio" id="poRadio" name="outcome_type" value="PO">
+                    <label for="poRadio" style="display: inline;">Program Outcome (PO)</label>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="standardSelect">Accreditation Standard</label>
+                <select id="standardSelect" name="standard_type">
+                    <option value="NBA">NBA (National Board of Accreditation)</option>
+                    <option value="NAAC">NAAC (National Assessment and Accreditation Council)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="outcomeText">Enter Outcome Text</label>
+                <textarea id="outcomeText" name="outcome_text" placeholder="Example: Students will be able to analyze and design algorithms..."></textarea>
+            </div>
+            
+            <button type="submit" id="analyzeBtn">
+                Check Alignment <span id="spinner">⏳</span>
+            </button>
+        </form>
+    </div>
+    
+    <div id="results">
+        <h2>Alignment Results</h2>
+        <div id="analysisResult"></div>
+    </div>
+
+    <script>
+        document.getElementById('alignmentForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const button = document.getElementById('analyzeBtn');
+            const spinner = document.getElementById('spinner');
+            
+            // Show loading state
+            button.disabled = true;
+            spinner.style.display = 'inline-block';
+            
+            fetch(window.location.href, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+                
+                // Display results
+                document.getElementById('analysisResult').innerHTML = 
+                    `<p><strong>Analyzing ${data.outcome_type} with ${data.standard}:</strong></p>
+                    <div style="white-space: pre-line">${data.analysis}</div>`;
+                
+                document.getElementById('results').style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred. Please try again.');
+            })
+            .finally(() => {
+                button.disabled = false;
+                spinner.style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>

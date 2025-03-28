@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subject Rubrics Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #f3f4f6;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center">
+    <div id="app" class="w-full max-w-4xl p-4"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const app = document.getElementById('app');
+            let stage = 'header-details';
+            let headerDetails = {
+                name: '',
+                sapId: '',
+                course: '',
+                courseCode: '',
+                year: '',
+                semester: '',
+                batch: '',
+                department: ''
+            };
+            let selectedSubjects = [];
+            let generatedRubrics = null;
+
+            const subjects = [
+                'Introduction to Programming',
+                'Data Structures', 
+                'Artificial Intelligence',
+                'Universal Human Values'
+            ];
+
+            const years = ['FY', 'SY', 'TY', 'Final Year'];
+            const semesters = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'];
+            const departments = [
+                'Artificial Intelligence (AI) and Data Science', 
+                'Computer Science', 
+                'Information Technology', 
+                'Other'
+            ];
+
+            function renderApp() {
+                app.innerHTML = '';
+                const card = document.createElement('div');
+                card.className = 'bg-white shadow-md rounded-lg p-6';
+
+                switch(stage) {
+                    case 'header-details':
+                        renderHeaderDetailsForm(card);
+                        break;
+                    case 'subject-selection':
+                        renderSubjectSelection(card);
+                        break;
+                    case 'rubrics-generated':
+                        renderRubricsGenerated(card);
+                        break;
+                }
+
+                app.appendChild(card);
+            }
+
+            function renderHeaderDetailsForm(card) {
+                card.innerHTML = `
+                    <h2 class="text-2xl font-bold mb-4">Enter Course Details</h2>
+                    <div class="grid grid-cols-2 gap-4">
+                        ${['name', 'sapId', 'course', 'courseCode'].map(field => `
+                            <div>
+                                <label class="block mb-2 capitalize">${field.replace(/([A-Z])/g, ' $1')}</label>
+                                <input 
+                                    type="text" 
+                                    class="w-full p-2 border rounded"
+                                    placeholder="Enter ${field.replace(/([A-Z])/g, ' $1')}"
+                                    value="${headerDetails[field]}"
+                                    onchange="updateHeaderDetails('${field}', this.value)"
+                                >
+                            </div>
+                        `).join('')}
+                        
+                        <div>
+                            <label class="block mb-2">Year</label>
+                            <select 
+                                class="w-full p-2 border rounded"
+                                onchange="updateHeaderDetails('year', this.value)"
+                            >
+                                <option value="">Select Year</option>
+                                ${years.map(year => `
+                                    <option 
+                                        value="${year}" 
+                                        ${headerDetails.year === year ? 'selected' : ''}
+                                    >${year}</option>
+                                `).join('')}
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block mb-2">Semester</label>
+                            <select 
+                                class="w-full p-2 border rounded"
+                                onchange="updateHeaderDetails('semester', this.value)"
+                            >
+                                <option value="">Select Semester</option>
+                                ${semesters.map(sem => `
+                                    <option 
+                                        value="${sem}" 
+                                        ${headerDetails.semester === sem ? 'selected' : ''}
+                                    >${sem}</option>
+                                `).join('')}
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block mb-2">Department</label>
+                            <select 
+                                class="w-full p-2 border rounded"
+                                onchange="updateHeaderDetails('department', this.value)"
+                            >
+                                <option value="">Select Department</option>
+                                ${departments.map(dept => `
+                                    <option 
+                                        value="${dept}" 
+                                        ${headerDetails.department === dept ? 'selected' : ''}
+                                    >${dept}</option>
+                                `).join('')}
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block mb-2">Batch</label>
+                            <input 
+                                type="text" 
+                                class="w-full p-2 border rounded"
+                                placeholder="Enter Batch"
+                                value="${headerDetails.batch}"
+                                onchange="updateHeaderDetails('batch', this.value)"
+                            >
+                        </div>
+
+                        <div class="col-span-2 mt-4">
+                            <button 
+                                class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
+                                onclick="proceedToSubjectSelection()"
+                            >
+                                Proceed to Subject Selection
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            function renderSubjectSelection(card) {
+                card.innerHTML = `
+                    <h2 class="text-2xl font-bold mb-4">Select Subjects for Rubrics</h2>
+                    <div class="mb-4 border-b pb-2">
+                        <h3 class="text-lg font-semibold">Course Details</h3>
+                        <p><strong>Name:</strong> ${headerDetails.name}</p>
+                        <p><strong>SAP ID:</strong> ${headerDetails.sapId}</p>
+                        <p><strong>Course:</strong> ${headerDetails.course} (${headerDetails.courseCode})</p>
+                    </div>
+                    <div class="space-y-4">
+                        ${subjects.map(subject => `
+                            <button 
+                                class="w-full p-2 border rounded ${selectedSubjects.includes(subject) ? 'bg-blue-500 text-white' : 'bg-white'}"
+                                onclick="toggleSubject('${subject}')"
+                            >
+                                ${subject}
+                            </button>
+                        `).join('')}
+                        <button 
+                            class="w-full mt-4 p-2 bg-green-500 text-white rounded ${selectedSubjects.length === 0 ? 'opacity-50 cursor-not-allowed' : ''}"
+                            onclick="generateRubrics()"
+                            ${selectedSubjects.length === 0 ? 'disabled' : ''}
+                        >
+                            Generate Rubrics
+                        </button>
+                    </div>
+                `;
+            }
+
+            function renderRubricsGenerated(card) {
+                card.innerHTML = generatedRubrics.map((rubric, index) => `
+                    <div class="mb-8">
+                        <div class="grid grid-cols-2 gap-4 mb-6 border-b pb-4">
+                            <div>
+                                <strong>Name:</strong> ${rubric.name}<br>
+                                <strong>SAP ID:</strong> ${rubric.sapId}
+                            </div>
+                            <div>
+                                <strong>Course:</strong> ${rubric.course}<br>
+                                <strong>Course Code:</strong> ${rubric.courseCode}<br>
+                                <strong>Department:</strong> ${rubric.department}
+                            </div>
+                        </div>
+
+                        <h2 class="text-2xl font-bold mb-4">${rubric.subject} Rubrics</h2>
+                        
+                        <table class="w-full border-collapse mb-6">
+                            <thead>
+                                <tr class="bg-gray-100">
+                                    <th class="border p-2">Performance Indicators</th>
+                                    ${[1,2,3,4,5,6,7,8,9,'A1','A2'].map(indicator => `
+                                        <th class="border p-2">${indicator}</th>
+                                    `).join('')}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="border p-2">Marks</td>
+                                    ${rubric.performanceIndicators.map((indicator, idx) => `
+                                        <td class="border p-2 text-center">
+                                            <input 
+                                                type="number" 
+                                                min="0" 
+                                                max="5" 
+                                                class="w-16 text-center p-1 border rounded"
+                                                value="${indicator.marks}"
+                                                onchange="updateRubricMarks(${index}, ${idx}, this.value)"
+                                            >
+                                        </td>
+                                    `).join('')}
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="text-right">
+                            <strong>Total:</strong> ${rubric.total}/25
+                        </div>
+                    </div>
+                `).join('');
+
+                const buttonsDiv = document.createElement('div');
+                buttonsDiv.className = 'flex space-x-4 mt-6';
+                buttonsDiv.innerHTML = `
+                    <button 
+                        class="w-full p-2 bg-blue-500 text-white rounded"
+                        onclick="resetToSubjectSelection()"
+                    >
+                        Select Different Subjects
+                    </button>
+                    <button 
+                        class="w-full p-2 border rounded"
+                        onclick="resetToHeaderDetails()"
+                    >
+                        Start Over
+                    </button>
+                `;
+                card.appendChild(buttonsDiv);
+            }
+
+            window.updateHeaderDetails = (field, value) => {
+                headerDetails[field] = value;
+            };
+
+            window.proceedToSubjectSelection = () => {
+                const requiredFields = ['name', 'sapId', 'course', 'courseCode', 'year', 'semester', 'department'];
+                const isValid = requiredFields.every(field => headerDetails[field]);
+                
+                if (isValid) {
+                    stage = 'subject-selection';
+                    renderApp();
+                } else {
+                    alert('Please fill in all required fields');
+                }
+            };
+
+            window.toggleSubject = (subject) => {
+                selectedSubjects = selectedSubjects.includes(subject) 
+                    ? selectedSubjects.filter(s => s !== subject)
+                    : [...selectedSubjects, subject];
+                renderApp();
+            };
+
+            window.generateRubrics = () => {
+                generatedRubrics = selectedSubjects.map(subject => ({
+                    ...headerDetails,
+                    subject,
+                    performanceIndicators: Array.from({length: 10}, (_, i) => ({
+                        number: i + 1,
+                        marks: 0
+                    })),
+                    total: 0
+                }));
+                stage = 'rubrics-generated';
+                renderApp();
+            };
+
+            window.updateRubricMarks = (rubricIndex, indicatorIndex, value) => {
+                generatedRubrics[rubricIndex].performanceIndicators[indicatorIndex].marks = Number(value);
+                generatedRubrics[rubricIndex].total = generatedRubrics[rubricIndex].performanceIndicators.reduce((sum, ind) => sum + ind.marks, 0);
+                renderApp();
+            };
+
+            window.resetToSubjectSelection = () => {
+                stage = 'subject-selection';
+                selectedSubjects = [];
+                renderApp();
+            };
+
+            window.resetToHeaderDetails = () => {
+                stage = 'header-details';
+                headerDetails = {
+                    name: '',
+                    sapId: '',
+                    course: '',
+                    courseCode: '',
+                    year: '',
+                    semester: '',
+                    batch: '',
+                    department: ''
+                };
+                selectedSubjects = [];
+                renderApp();
+            };
+
+            renderApp();
+        });
+    </script>
+</body>
+</html>

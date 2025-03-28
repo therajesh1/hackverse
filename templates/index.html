@@ -1,0 +1,625 @@
+{% extends "base.html" %}
+{% block title %} Mapify - AI Course Mapping {% endblock title %}
+
+{% block body %}
+    <style>
+        :root {
+            --dark-bg-primary: #121212;
+            --dark-bg-secondary: #1E1E1E;
+            --dark-accent-primary: #BB86FC;
+            --dark-accent-secondary: #03DAC6;
+            --dark-text-primary: #FFFFFF;
+            --dark-text-secondary: #B0B0B0;
+            --dark-shadow: rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark-bg-primary);
+            color: var(--dark-text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        #background-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            padding: 4rem 2rem;
+        }
+
+        .hero-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            animation: fadeInUp 1s ease-out;
+            position: relative;
+            z-index: 10;
+        }
+
+        .hero-text {
+            max-width: 50%;
+            z-index: 10;
+        }
+
+        .hero-text h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(90deg, var(--dark-accent-primary), var(--dark-accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .hero-text p {
+            color: var(--dark-text-secondary);
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: var(--dark-accent-primary);
+            color: var(--dark-bg-primary);
+            padding: 15px 40px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+
+        .cta-button:hover {
+            background: var(--dark-accent-secondary);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-animation {
+            width: 500px;
+            height: 350px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 20px 50px var(--dark-shadow);
+        }
+
+        /* Rest of the previous CSS remains the same */
+    </style>
+
+    <!-- Background Animation Canvas -->
+    <canvas id="background-animation"></canvas>
+    <style>
+        .hero-illustration {
+            max-width: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-illustration img {
+            max-width: 500px; /* Increased from 400px to 500px */
+            width: 100%; /* Responsive scaling */
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px var(--dark-shadow);
+            transition: transform 0.3s ease;
+        }
+
+        .hero-illustration img:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 1024px) {
+            .hero-illustration img {
+                max-width: 400px; /* Slightly larger on mobile */
+            }
+        }
+    </style>
+    <section class="hero-section">
+        <div class="container hero-content">
+            <div class="hero-text">
+                <h1>MAPIFY</h1>
+                <p>AI-Powered Course Outcome to Program Outcome Mapping & Justification System</p>
+                <a href="mapping_form.html" class="cta-button">Get Started</a>
+            </div>
+            
+            <div class="hero-illustration">
+                <img src="/static/gf.gif" alt="Mapify Workspace Illustration">
+            </div>      
+          </div>
+    </section>
+    <section class="cards-section py-5 bg-dark text-white">
+        <div class="container">
+            <div class="row justify-content-center">
+                <!-- First Card -->
+                <div class="col-md-4 mb-4 d-flex">
+                    <div class="card bg-secondary text-white border-0 shadow-lg rounded-lg animate-card">
+                        <div class="card-body text-center">
+                            <div class="card-icon mb-3">
+                                <i class="fas fa-brain fa-3x"></i> <!-- AI Icon -->
+                            </div>
+                            <h5 class="card-title">AI-Driven CO-PO Mapping & Justification</h5>
+                            <p class="card-text">Leverage AI to map course outcomes to program outcomes and generate justifications automatically.</p>
+                            <a href="co_po_mapping" class="btn btn-dark mt-3">Learn More</a>
+
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Second Card -->
+                <div class="col-md-4 mb-4 d-flex">
+                    <div class="card bg-secondary text-white border-0 shadow-lg rounded-lg animate-card">
+                        <div class="card-body text-center">
+                            <div class="card-icon mb-3">
+                                <i class="fas fa-university fa-3x"></i> <!-- University Guidelines Icon -->
+                            </div>
+                            <h5 class="card-title">University Guidelines</h5>
+                            <p class="card-text">Follow the specific guidelines provided by universities for mapping and justification.</p>
+                            <a href="accreditation" class="btn btn-dark mt-3">Learn More</a>
+
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Third Card -->
+                <div class="col-md-4 mb-4 d-flex">
+                    <div class="card bg-secondary text-white border-0 shadow-lg rounded-lg animate-card">
+                        <div class="card-body text-center">
+                            <div class="card-icon mb-3">
+                                <i class="fas fa-chart-line fa-3x"></i> <!-- Student Performance Icon -->
+                            </div>
+                            <h5 class="card-title">Student Performance</h5>
+                            <p class="card-text">Analyze and track student performance to improve course outcomes effectively.</p>
+                            <a href="" class="btn btn-dark mt-3">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="cards-section py-5 bg-dark text-white">
+        <div class="container">
+            <div class="row justify-content-center">
+                <!-- First Card: Course Outcome and Tracking -->
+                <div class="col-md-4 mb-4 d-flex">
+                    <div class="card bg-secondary text-white border-0 shadow-lg rounded-lg animate-card">
+                        <div class="card-body text-center">
+                            <div class="card-icon mb-3">
+                                <i class="fas fa-clipboard-list fa-3x"></i> <!-- Course Outcome Icon -->
+                            </div>
+                            <h5 class="card-title">Course Outcome & Tracking</h5>
+                            <p class="card-text">Monitor and track course outcomes effectively to ensure they align with program outcomes.</p>
+                            <a href="tracking" class="btn btn-dark mt-3">Learn More</a>
+
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Second Card: Feedback -->
+                <div class="col-md-4 mb-4 d-flex">
+                    <div class="card bg-secondary text-white border-0 shadow-lg rounded-lg animate-card">
+                        <div class="card-body text-center">
+                            <div class="card-icon mb-3">
+                                <i class="fas fa-comments fa-3x"></i> <!-- Feedback Icon -->
+                            </div>
+                            <h5 class="card-title">Syllabus</h5>
+                            <p class="card-text">Entire syllabus with the COs in tabular format.</p>
+                            <a href="syllabus" class="btn btn-dark mt-3">Learn More</a>
+
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Third Card: Question Paper Generation -->
+                <div class="col-md-4 mb-4 d-flex">
+                    <div class="card bg-secondary text-white border-0 shadow-lg rounded-lg animate-card">
+                        <div class="card-body text-center">
+                            <div class="card-icon mb-3">
+                                <i class="fas fa-file-alt fa-3x"></i> <!-- Question Paper Icon -->
+                            </div>
+                            <h5 class="card-title">Question Paper Generation</h5>
+                            <p class="card-text">Generate customized question papers based on course content and outcome criteria.</p>
+                            <a href="question-paper-generator" class="btn btn-dark mt-3">Learn More</a>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="cards-section py-5 bg-dark text-white">
+        <div class="container">
+            <div class="row justify-content-center">
+                <!-- First Card: Course Outcome and Tracking -->
+                <div class="col-md-4 mb-4 d-flex">
+                    <div class="card bg-secondary text-white border-0 shadow-lg rounded-lg animate-card">
+                        <div class="card-body text-center">
+                            <div class="card-icon mb-3">
+                                <i class="fas fa-clipboard-list fa-3x"></i> <!-- Course Outcome Icon -->
+                            </div>
+                            <h5 class="card-title">Rubrices Generator</h5>
+                            <p class="card-text">Generate your rubrics in lesser time.</p>
+                            <a href="rubrics" class="btn btn-dark mt-3">Learn More</a>
+
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Second Card: Feedback -->
+                <div class="col-md-4 mb-4 d-flex">
+                    <div class="card bg-secondary text-white border-0 shadow-lg rounded-lg animate-card">
+                        <div class="card-body text-center">
+                            <div class="card-icon mb-3">
+                                <i class="fas fa-comments fa-3x"></i> <!-- Feedback Icon -->
+                            </div>
+                            <h5 class="card-title">Feedback</h5>
+                            <p class="card-text">Entire syllabus with the COs in tabular format.</p>
+                            <a href="feedback" class="btn btn-dark mt-3">Learn More</a>
+
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Third Card: Question Paper Generation -->
+                <div class="col-md-4 mb-4 d-flex">
+                    <div class="card bg-secondary text-white border-0 shadow-lg rounded-lg animate-card">
+                        <div class="card-body text-center">
+                            <div class="card-icon mb-3">
+                                <i class="fas fa-file-alt fa-3x"></i> <!-- Question Paper Icon -->
+                            </div>
+                            <h5 class="card-title">Question Paper Generation</h5>
+                            <p class="card-text">Generate customized question papers based on course content and outcome criteria.</p>
+                            <a href="question-paper-generator" class="btn btn-dark mt-3">Learn More</a>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Add these links for the Font Awesome icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    
+    <!-- Add the following custom styles for animations and UI enhancements -->
+    <style>
+        /* Fade-in animation for the section */
+        .cards-section {
+            opacity: 0;
+            animation: fadeIn 1.5s forwards;
+        }
+    
+        /* Animation to fade in the card elements */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+    
+        /* Card hover scale effect */
+        .animate-card {
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            opacity: 0;
+            animation: fadeInCard 1s forwards;
+        }
+    
+        .animate-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+        }
+    
+        /* Ensuring consistent card sizes */
+        .card {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+    
+        /* Additional animation for the card fade-in */
+        @keyframes fadeInCard {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+    
+        /* Rounded card corners */
+        .card {
+            border-radius: 15px;
+        }
+    
+        /* Card Body padding and font size adjustments */
+        .card-body {
+            padding: 2rem;
+        }
+    
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+    
+        .card-text {
+            font-size: 1rem;
+            color: #ddd;
+        }
+    
+        /* Card Icon adjustments */
+        .card-icon {
+            color: #ff9900; /* Aesthetic Icon color */
+        }
+    
+        /* Improved spacing for larger screens */
+        @media (min-width: 992px) {
+            .card {
+                min-height: 350px;
+            }
+        }
+        .container {
+            background-color: transparent !important;
+        }
+    </style>
+    <!-- Add these links for the Font Awesome icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    
+    <!-- Add the following custom styles for animations and UI enhancements -->
+    <style>
+        .container {
+            background-color: transparent !important;
+        }
+        /* Fade-in animation for the section */
+        .cards-section {
+            opacity: 0;
+            animation: fadeIn 1.5s forwards;
+        }
+    
+        /* Animation to fade in the card elements */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+    
+        /* Card hover scale effect */
+        .animate-card {
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, opacity 0.3s ease-in-out;
+            opacity: 0;
+            animation: fadeInCard 1s forwards;
+        }
+    
+        .animate-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3);
+        }
+    
+        /* Ensuring consistent card sizes */
+        .card {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+    
+        /* Additional animation for the card fade-in */
+        @keyframes fadeInCard {
+            0% {
+                opacity: 0;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+    
+        /* Rounded card corners */
+        .card {
+            border-radius: 15px;
+        }
+    
+        /* Card Body padding and font size adjustments */
+        .card-body {
+            padding: 2rem;
+        }
+    
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+    
+        .card-text {
+            font-size: 1rem;
+            color: #ddd;
+        }
+    
+        /* Card Icon adjustments */
+        .card-icon {
+            color:rgb(28, 68, 199); /* Aesthetic Icon color */
+        }
+    
+        /* Improved spacing for larger screens */
+        @media (min-width: 992px) {
+            .card {
+                min-height: 350px;
+            }
+        }
+    
+    </style>
+    <!-- Remaining sections from previous design -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/loaders/GLTFLoader.js"></script>
+
+    <script>
+        // Particle Background Animation
+        const canvas = document.getElementById('background-animation');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.radius = Math.random() * 2;
+                this.speedX = (Math.random() - 0.5) * 0.5;
+                this.speedY = (Math.random() - 0.5) * 0.5;
+                this.color = `rgba(187, 134, 252, ${Math.random() * 0.3})`;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                // Wrap around the screen
+                if (this.x < 0) this.x = canvas.width;
+                if (this.x > canvas.width) this.x = 0;
+                if (this.y < 0) this.y = canvas.height;
+                if (this.y > canvas.height) this.y = 0;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+        }
+
+        const particles = [];
+        const particleCount = 200;
+
+        for (let i = 0; i < particleCount; i++) {
+            particles.push(new Particle());
+        }
+
+        function animateBackground() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Create connection lines between close particles
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < 100) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.strokeStyle = `rgba(187, 134, 252, ${1 - distance / 100})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+
+            requestAnimationFrame(animateBackground);
+        }
+
+        // Resize canvas on window resize
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        animateBackground();
+
+        // 3D Model Rendering (Previous Three.js code remains the same)
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, 500 / 350, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true });
+        renderer.setSize(500, 350);
+        document.getElementById('hero-animation').appendChild(renderer.domElement);
+
+        // Lighting for better 3D model visualization
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+        const pointLight = new THREE.PointLight(0xffffff, 1);
+        pointLight.position.set(5, 5, 5);
+        scene.add(pointLight);
+
+        const loader = new THREE.GLTFLoader();
+        loader.load('/static/your-3d-model.glb', function(gltf) {
+            const model = gltf.scene;
+            scene.add(model);
+
+            model.scale.set(2, 2, 2);
+            model.position.set(0, -1, 0);
+
+            function animate() {
+                requestAnimationFrame(animate);
+                model.rotation.y += 0.005;
+                renderer.render(scene, camera);
+            }
+            animate();
+        }, undefined, function(error) {
+            console.error('Error loading model:', error);
+        });
+
+        camera.position.z = 5;
+    </script>
+{% endblock body %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}
+Login
+{% endblock title %}
+{% block body %}
+<h2>Program Outcome Tracking</h2>
+<table class="table table-dark">
+    <thead>
+        <tr>
+            <th>Program Outcome</th>
+            <th>Description</th>
+            <th>Progress (%)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for data in tracking_data %}
+        <tr>
+            <td>{{ data.name }}</td>
+            <td>{{ data.description }}</td>
+            <td>{{ data.progress }}%</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock body %}
